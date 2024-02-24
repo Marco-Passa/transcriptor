@@ -1,1 +1,4 @@
 flask-server/venv
+flask-server/log.txt
+flask-server/audio.wav
+flask-server/audio.opus

@@ -16,22 +16,30 @@ def transcribe_audio(audio_data):
 
     # Decode the base64 data
     decoded_data = base64.b64decode(audio_data)
-
+    print(audio_data[-5:])
     # Write the decoded data to a file
     with open("./audio.opus", "wb") as f:
         f.write(decoded_data)
 
     # Convert from opus to wav file
-    os.system(f'ffmpeg -y -i "{"./audio.opus"}" -vn "{"./audio.wav"}"')
+    os.system(f'ffmpeg -y -i {"./audio.opus"} -vn {"./audio.wav"} > ./log.txt 2>&1')
+    # os.system(f'ffmpeg -y -i "{"./audio.opus"}" -vn "{"./audio.wav"}"')
 
     try:
         with sr.AudioFile("./audio.wav") as source:
             audio_data = recognizer.listen(source)
-        transcription = recognizer.recognize_google(audio_data, show_all=False)
-        transcription2 = recognizer.recognize_google(audio_data, show_all=True)
-        print(len(transcription2['alternative']))
-        for i in range(len(transcription2['alternative'])):
-            print(transcription2['alternative'][i])
+        print(audio_data)
+        transcription = ''
+        try:
+            transcription = recognizer.recognize_google(audio_data, show_all=False)
+        except sr.UnknownValueError:
+            print("Could not understand audio")
+        print('transcription: ' + transcription)
+        # transcription2 = recognizer.recognize_google(audio_data, show_all=True)
+        # print('ciao2')
+        # print(len(transcription2['alternative']))
+        # for i in range(len(transcription2['alternative'])):
+        #     print(transcription2['alternative'][i])
 
         return transcription
     except sr.UnknownValueError:
